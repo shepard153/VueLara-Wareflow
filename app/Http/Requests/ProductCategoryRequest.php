@@ -25,7 +25,7 @@ class ProductCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => 'required|string|min:4|unique:product_categories,name,' . $this?->id ?? null,
+            'name'      => ['required', 'string', 'min:4', 'unique:product_categories,name,' . $this?->id ?? null],
             'parent_id' => ['sometimes', 'required_if:is_subcategory,true', new ProductCategoryLevelsLimit()]
         ];
     }

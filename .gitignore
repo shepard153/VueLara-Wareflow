@@ -1,5 +1,4 @@
 /.phpunit.cache
-/bootstrap/ssr
 /node_modules
 /public/build
 /public/hot
@@ -18,4 +17,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/lang/php_*.json

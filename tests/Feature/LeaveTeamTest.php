@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Laravel\Jetstream\Http\Livewire\TeamMemberManager;
+use Livewire\Livewire;
 
 test('users can leave teams', function () {
     $user = User::factory()->withPersonalTeam()->create();
@@ -11,7 +13,8 @@ test('users can leave teams', function () {
 
     $this->actingAs($otherUser);
 
-    $response = $this->delete('/teams/'.$user->currentTeam->id.'/members/'.$otherUser->id);
+    $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+        ->call('leaveTeam');
 
     expect($user->currentTeam->fresh()->users)->toHaveCount(0);
 });
@@ -19,9 +22,9 @@ test('users can leave teams', function () {
 test('team owners cant leave their own team', function () {
     $this->actingAs($user = User::factory()->withPersonalTeam()->create());
 
-    $response = $this->delete('/teams/'.$user->currentTeam->id.'/members/'.$user->id);
-
-    $response->assertSessionHasErrorsIn('removeTeamMember', ['team']);
+    $component = Livewire::test(TeamMemberManager::class, ['team' => $user->currentTeam])
+        ->call('leaveTeam')
+        ->assertHasErrors(['team']);
 
     expect($user->currentTeam->fresh())->not->toBeNull();
 });
